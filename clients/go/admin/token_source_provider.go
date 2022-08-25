@@ -53,7 +53,7 @@ func NewTokenSourceProvider(ctx context.Context, cfg *Config, tokenCache pkce.To
 			return nil, err
 		}
 	case AuthTypePkce:
-		tokenProvider, err = NewPKCETokenSourceProvider(ctx, cfg.PkceConfig, tokenCache, authClient)
+		tokenProvider, err = NewPKCETokenSourceProvider(ctx, cfg.PkceConfig, tokenCache, authClient, cfg.Scopes)
 		if err != nil {
 			return nil, err
 		}
@@ -93,9 +93,9 @@ type PKCETokenSourceProvider struct {
 	tokenOrchestrator pkce.TokenOrchestrator
 }
 
-func NewPKCETokenSourceProvider(ctx context.Context, pkceCfg pkce.Config, tokenCache pkce.TokenCache, authClient service.AuthMetadataServiceClient) (TokenSourceProvider, error) {
+func NewPKCETokenSourceProvider(ctx context.Context, pkceCfg pkce.Config, tokenCache pkce.TokenCache, authClient service.AuthMetadataServiceClient, scopes []string) (TokenSourceProvider, error) {
 
-	tokenOrchestrator, err := pkce.NewTokenOrchestrator(ctx, pkceCfg, tokenCache, authClient)
+	tokenOrchestrator, err := pkce.NewTokenOrchestrator(ctx, pkceCfg, tokenCache, authClient, scopes)
 	if err != nil {
 		return nil, err
 	}

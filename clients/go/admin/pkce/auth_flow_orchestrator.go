@@ -150,10 +150,13 @@ func (f TokenOrchestrator) FetchTokenFromAuthFlow(ctx context.Context) (*oauth2.
 
 // NewTokenOrchestrator creates a new TokenOrchestrator that implements the main logic to initiate Pkce flow to issue
 // access token and refresh token as well as refreshing the access token if a refresh token is present.
-func NewTokenOrchestrator(ctx context.Context, cfg Config, tokenCache TokenCache, authMetadataClient service.AuthMetadataServiceClient) (TokenOrchestrator, error) {
+func NewTokenOrchestrator(ctx context.Context, cfg Config, tokenCache TokenCache, authMetadataClient service.AuthMetadataServiceClient, scopes []string) (TokenOrchestrator, error) {
 	clientConf, err := BuildClientConfig(ctx, authMetadataClient)
 	if err != nil {
 		return TokenOrchestrator{}, err
+	}
+	if len(scopes) > 0 {
+		clientConf.Scopes = scopes
 	}
 
 	return TokenOrchestrator{
